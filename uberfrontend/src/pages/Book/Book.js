@@ -46,19 +46,19 @@ class Book extends React.Component {
     let regDate = new RegExp(/(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.](19|20)\d\d/);
     switch (fieldName) {
       case 'source':
-        sourceValid = (value.length > 3) && (reg.test(value));
+        sourceValid = (value.length === 0 || reg.test(value));
         fieldValidationErrors.source = sourceValid ? '' : ' is invalid or too short';
         break;
       case 'destination':
-        destinationValid = value.length > 3 && (reg.test(value)) && this.state.source != this.state.destination
+        destinationValid = (value.length === 0 || reg.test(value)) && this.state.source != this.state.destination
         fieldValidationErrors.destination = destinationValid ? '' : ' is too short or invalid';
         break;
       case 'user':
-        userValid = value.length > 3 && (reg.test(value));
+        userValid = (value.length === 0 || reg.test(value));
         fieldValidationErrors.user = userValid ? '' : ' is too short or invalid';
         break;
       case 'date':
-        dateValid = value.length > 3 && (regDate.test(value));
+        dateValid = value.length === 0 || (!reg.test(value) && regDate.test(value));
         fieldValidationErrors.date = dateValid ? '' : ' is too short or invalid';
         break;
       default:
@@ -83,7 +83,7 @@ class Book extends React.Component {
 
   book(item) {
 
-    fetch('http://52.71.107.88:5000/book', {
+    fetch('http://18.211.239.93:5000/book', {
       method: 'POST', headers: {
         'Content-Type': 'application/json'
       }, body: JSON.stringify({
@@ -108,8 +108,8 @@ class Book extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const { source, destination, user } = this.state;
-    fetch('http://52.71.107.88:5000/checkAvailability', {
+    const { source, destination, user, date } = this.state;
+    fetch('http://18.211.239.93:5000/checkAvailability', {
       method: 'POST', headers: {
         'Content-Type': 'application/json'
       }, body: JSON.stringify({ source: this.state.source, destination: this.state.destination, date: this.state.date })
@@ -195,7 +195,7 @@ class Book extends React.Component {
                   variant="outlined"
                   margin="normal"
                 /><br /><br /></div>
-              <input type="submit" value="Check Availability" className="btn btn-primary" disabled={!this.state.formValid} onClick={this.handleSubmit.bind(this)} />
+              <input type="submit" value="Check Availability" className="btn btn-primary" onClick={this.handleSubmit.bind(this)} />
             </form>
             <br></br>
             <table border='1'>
